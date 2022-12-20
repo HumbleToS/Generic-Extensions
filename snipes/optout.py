@@ -25,6 +25,35 @@ CREATE TABLE IF NOT EXISTS botuser (
 );
 """
 
+# The Error and check below can be used above any of the commands
+# that you want only people that aren't opted out to be able to use.
+#
+# Just add the decorator onto the command.
+class NotOptedInError(commands.CommandError):
+    """User is not opted in to snipes."""
+    pass
+
+def not_opted_out_only():
+    """Returns True if a user is not opted out.
+
+    Returns
+    -------
+    True
+        The user is not opted out.
+
+    Raises
+    ------
+    NotOptedInError
+        The user is opted out.
+    """
+    async def predicate(ctx: commands.Context):
+        is_opted_out = await BotUser.is_opted_out(ctx.author)
+        if is_opted_out:
+            raise NotOptedInError("User must be opted in to use this command.")
+        return True
+    return commands.check(predicate)
+
+
 @dataclass(slots=True)
 class BotUser:
     id: int
