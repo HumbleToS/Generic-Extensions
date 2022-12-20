@@ -98,7 +98,7 @@ class DeleteSnipe:
         Returns
         -------
         Self | None
-            The found DeleteSnipe if found, else None.
+            The DeleteSnipe if found, else None.
         """
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
