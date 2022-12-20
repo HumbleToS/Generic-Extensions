@@ -12,7 +12,7 @@ The contents of `snipescommon.py` and `optout.py` are used in the the other snip
 
 These extensions were written for discord.py. They were tested on discord.py v2.1.0 using Python 3.11.1 on macOS.
 
-All snipe files rely on `asqlite` (https://github.com/Rapptz/asqlite) and `typing_extensions` being installed through pip via `pip install git+https://github.com/Rapptz/asqlite`.
+All snipe files rely on `asqlite` (https://github.com/Rapptz/asqlite) being installed through pip via `pip install git+https://github.com/Rapptz/asqlite`.
 
 ## Customization
 
