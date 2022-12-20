@@ -1,17 +1,18 @@
 # Snipes
 
-The files in this folder deal with "snipes" on Discord. The files require guild_messages, message_content, and reactions intents to properly function. The Members intent is recommended.
+The files in this folder deal with "snipes" on Discord. The files require guild_messages, message_content, and guild_reactions intents to properly function. The Members intent is strongly recommended.
 
 `messagesnipe.py` deals with deleted messages, `editsnipe.py` deals with edited messages, and `reactionsnipe.py` deals with removed reactions.
 
 The contents of `snipescommon.py` and `optout.py` are used in the the other snipe modules for consistency and to abide by the requirement that users can opt out of message recording.
 
-**It is highly recommended that you do not remove the optout module as you may be violating Discord's rules if you do.**
+**It is highly recommended that you use the optout module as you may be violating Discord's rules if you don't.**
 
 ## Dependencies
 
-All snipe files rely on `asqlite` (https://github.com/Rapptz/asqlite) and `typing_extensions` being installed through pip via `pip install git+https://github.com/Rapptz/asqlite`.
+These extensions were written for discord.py. They were tested on discord.py v2.1.0 using Python 3.11.1 on macOS.
 
+All snipe files rely on `asqlite` (https://github.com/Rapptz/asqlite) and `typing_extensions` being installed through pip via `pip install git+https://github.com/Rapptz/asqlite`.
 
 ## Customization
 
