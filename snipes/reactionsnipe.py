@@ -1,8 +1,22 @@
+"""
+Copyright 2022-present fretgfr
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 
 """
-This modules uses the following third party libs: asqlite, typing_extensions
+This module uses the following third party libs installed via pip: asqlite (https://github.com/Rapptz/asqlite)
 """
-
 
 from dataclasses import dataclass
 import datetime
@@ -18,7 +32,6 @@ from typing_extensions import Self
 # from the database (the custom event won't work unless you maintain that logic.)
 from .snipescommon import DB_FILENAME
 from .optout import BotUser
-
 
 _logger = logging.getLogger(__name__)
 
@@ -38,7 +51,6 @@ CREATE TABLE IF NOT EXISTS reactionsnipe (
 )
 """
 
-
 @dataclass(slots=True)
 class ReactionSnipe:
     """Represents a deleted Discord Message"""
@@ -50,21 +62,6 @@ class ReactionSnipe:
     channel_id: int
     unicode_codepoint: str
     emoji_url: str
-
-    @property
-    def is_custom(self) -> bool:
-        """Whether the emoji is custom."""
-        return self.emoji_url is not None
-
-    @property
-    def is_unicode(self) -> bool:
-        """Whether the emoji is unicode."""
-        return self.unicode_codepoint is not None
-
-    @property
-    def emoji(self):
-        """Returns the emoji asset url or unicode codepoint as applicable."""
-        return self.emoji_url if self.emoji_url is not None else self.unicode_codepoint
 
     @classmethod
     async def from_payload(cls, payload: discord.RawReactionActionEvent, /) -> Self:
@@ -193,6 +190,21 @@ class ReactionSnipe:
                 await db.commit()
 
                 return cur.get_cursor().rowcount
+
+    @property
+    def is_custom(self) -> bool:
+        """Whether the emoji is custom."""
+        return self.emoji_url is not None
+
+    @property
+    def is_unicode(self) -> bool:
+        """Whether the emoji is unicode."""
+        return self.unicode_codepoint is not None
+
+    @property
+    def emoji(self) -> str:
+        """Returns the emoji asset url or unicode codepoint as applicable."""
+        return self.emoji_url if self.emoji_url is not None else self.unicode_codepoint
 
     @property
     def message_jump_url(self) -> str | None:
