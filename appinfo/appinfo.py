@@ -67,10 +67,10 @@ class ApplicationInformationCog(commands.Cog):
             if default_invite_link is not None:
                 embed.add_field(name="Invite Link", value=f'[Default Invite Link]({default_invite_link} "Invite URL")')
 
-        embed.add_field(name="Privacy Policy", value=f'[Privacy Policy]({app_info.privacy_policy_url} "Privacy Policy Link")' if app_info.privacy_policy_url is not None else "Doesn't have one", inline=False)
-        embed.add_field(name="Terms of Service", value=f'[Terms of Service]({app_info.terms_of_service_url} "Privacy Policy Link")' if app_info.terms_of_service_url is not None else "Doesn't have one", inline=False)
+        embed.add_field(name="Privacy Policy", value=f'[Privacy Policy]({app_info.privacy_policy_url} "Privacy Policy Link")' or "Doesn't have one", inline=False)
+        embed.add_field(name="Terms of Service", value=f'[Terms of Service]({app_info.terms_of_service_url} "Privacy Policy Link")' or "Doesn't have one.", inline=False)
         embed.add_field(name="Tags", value=", ".join(app_info.tags) if app_info.tags else "Doesn't have any.", inline=False)
-        embed.add_field(name="Description", value=app_info.description if app_info.description else "Doesn't have one.", inline=False)
+        embed.add_field(name="Description", value=app_info.description or "Doesn't have one.", inline=False)
         embed.add_field(name="Servers", value=f"{len(self.bot.guilds):,}")
         embed.add_field(name="Users", value=f"{len(self.bot.users):,}")
 
