@@ -79,12 +79,8 @@ class TagsCog(commands.Cog):
         async with asqlite.connect(DB_FILENAME) as db:
             await db.execute(TAGS_SETUP_SQL)
 
-    @commands.group()
-    async def tag(self, ctx: commands.Context):
-        pass
-
-    @tag.command()
-    async def get(self, ctx: commands.Context, *, name: str) -> None:
+    @commands.group(invoke_without_command=True)
+    async def tag(self, ctx: commands.Context, *, name: str):
         """Gets a tag with given name
 
         Parameters
@@ -99,7 +95,7 @@ class TagsCog(commands.Cog):
         else:
             await ctx.send(f"Could not find tag with name `{name}`.")
 
-    @tag.command()
+    @tag.command(aliases=("make",))
     async def create(self, ctx: commands.Context, name: str, *, content: str) -> None:
         """Creates a tag with given name and content.
 
@@ -117,7 +113,7 @@ class TagsCog(commands.Cog):
         else:
             await ctx.send(f"Tag with name `{name}` already exists.")
 
-    @tag.command()
+    @tag.command(aliases=("rm",))
     async def delete(self, ctx: commands.Context, *, name: str) -> None:
         """Deletes a tag with given name.
 
@@ -141,7 +137,7 @@ class TagsCog(commands.Cog):
         else:
             await ctx.send(f"Something went wrong while deleting `{name}`.")
 
-    @tag.command()
+    @tag.command(aliases=("edit",))
     async def update(self, ctx: commands.Context, name: str, *, new_content: str) -> None:
         """Updates a tag with given name and new content.
 
