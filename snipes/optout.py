@@ -13,6 +13,7 @@ TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONIN
 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
 OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from __future__ import annotations
 
 """
 This module emits a custom event: "on_optout_status_change" with the following parameters:
@@ -27,7 +28,7 @@ import logging
 
 import asqlite
 from discord.ext import commands
-from typing_extensions import Self
+
 
 from .snipescommon import DB_FILENAME
 
@@ -75,7 +76,7 @@ class BotUser:
     opted_out: bool
 
     @classmethod
-    async def create_or_update(cls, id: int, opted_out: bool) -> Self:
+    async def create_or_update(cls, id: int, opted_out: bool) -> BotUser:
         """Creates or updates BotUser with given id and status
 
         Parameters
@@ -98,7 +99,7 @@ class BotUser:
                 return cls(**res)
 
     @classmethod
-    async def get(cls, id: int) -> Self | None:
+    async def get(cls, id: int) -> BotUser | None:
         """Gets a BotUser with given id, if exists
 
         Parameters
