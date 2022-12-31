@@ -13,6 +13,7 @@ TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONIN
 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
 OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
+from __future__ import annotations
 
 """
 This module uses the following third party libs installed via pip: asqlite (https://github.com/Rapptz/asqlite)
@@ -25,7 +26,6 @@ import logging
 import asqlite
 import discord
 from discord.ext import commands, tasks
-from typing_extensions import Self
 
 # If not using all snipe categories, you'll need to bring these items into this file,
 # along with making sure the BotUser table is created and handling deleting opted out users data
@@ -64,7 +64,7 @@ class ReactionSnipe:
     emoji_url: str
 
     @classmethod
-    async def from_payload(cls, payload: discord.RawReactionActionEvent, /) -> Self:
+    async def from_payload(cls, payload: discord.RawReactionActionEvent, /) -> ReactionSnipe:
         """Creates a ReactionSnipe from a given `discord.RawReactionActionEvent`.
 
         Parameters
@@ -100,7 +100,7 @@ class ReactionSnipe:
                 return cls(**res)
 
     @classmethod
-    async def get_in_channel(cls, channel_id: int, /, *, offset: int = 0) -> Self | None:
+    async def get_in_channel(cls, channel_id: int, /, *, offset: int = 0) -> ReactionSnipe | None:
         """Gets a ReactionSnipe in a given channel at a given offset.
 
         This is ordered by deletion time.
