@@ -1,6 +1,18 @@
+"""
+Copyright 2022-present fretgfr
 
-from __future__ import annotations
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 import logging
 
 import discord
@@ -52,7 +64,7 @@ class InfoCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(aliases=("si", "gi"))
     @commands.guild_only()
     async def serverinfo(self, ctx: commands.Context) -> None:
         """Gives you information about the current server."""
@@ -104,7 +116,7 @@ class InfoCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=("ui", ))
     @commands.guild_only()
     async def userinfo(self, ctx: commands.Context, *, member: discord.Member = None) -> None:
         """Gives you information about a server member.
@@ -138,7 +150,7 @@ class InfoCommands(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=("ri",))
     @commands.guild_only()
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role = None) -> None:
         """Gives you information about a role.
@@ -177,6 +189,7 @@ class InfoCommands(commands.Cog):
             embed.add_field(name=name, value=value[0], inline=value[1])
 
         await ctx.send(embed=embed)
+
 
 async def setup(bot: commands.Bot):
     _logger.info("Loading cog InfoCommands")
