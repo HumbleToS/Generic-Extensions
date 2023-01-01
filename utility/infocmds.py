@@ -86,7 +86,7 @@ class InformationCommands(commands.Cog):
         embed.set_footer(text="Created")
         embed.timestamp = guild.created_at
 
-        fields = { # field_name: value
+        fields = { # field_name: (value, inline)
             "ID": (f"{guild.id}", True),
             "Owner": (f"{guild.owner.mention}", True),
             "Members": (f"{num_members:,} ({num_bots:,} Bots", False),
@@ -105,13 +105,34 @@ class InformationCommands(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def userinfo(self, ctx: commands.Context, user: discord.Member = None) -> None:
-        user = user or ctx.author
-        pass
+    async def userinfo(self, ctx: commands.Context, member: discord.Member = None) -> None:
+        member = member or ctx.author
+        roles = member.roles
+        roles_text = "".join(f'{role.mention}  ' for role in roles[1:])
+
+        embed = discord.Embed(title=str(member), color=EMBED_COLOR)
+
+        embed.set_thumbnail(url=member.display_avatar.url)
+
+        embed.set_footer(text="Joined At")
+        embed.timestamp = member.joined_at
+
+        fields = { # field_name: (value, inline)
+            "ID": (f"{member.id}", True),
+            "Bot?": (f"{'Yes' if member.bot else 'No'}", True),
+            "Created At": (f"{discord.utils.format_dt(member.created_at)}", False),
+            "Top Role:": (f"{member.top_role.mention if len(roles) > 1 else 'No Custom Roles'}", False),
+            f"Roles: ({len(roles)})": (roles_text if len(roles_text) < 1_000 else "Too many to show.", False)
+        }
+
+        for name, value in fields.items():
+            embed.add_field(name=name, value=value[0], inline=value[1])
+
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.guild_only()
-    async def roleinfo(self, ctx: commands.Context, role: discord.Role = None) -> None:
+    async def roleinfo(self, ctx: commands.Context, role: discord.Role) -> None:
         pass
 
 async def setup(bot: commands.Bot):
