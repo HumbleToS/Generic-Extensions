@@ -14,6 +14,7 @@ THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABI
 OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 import logging
+import re
 
 import discord
 from discord.ext import commands
@@ -46,6 +47,13 @@ class Utility(commands.Cog):
 
             except (discord.Forbidden, discord.HTTPException):
                 await ctx.send("I couldn't process this request. Please check my permissions.")
+
+    # This listener assumes that you only have a single prefix set.
+    # IF you don't you will need to update this to display correctly.
+    @commands.Cog.listener()
+    async def on_message(self, msg: discord.Message) -> None:
+        if re.fullmatch(rf"<@!?{self.bot.user.id}>", msg.content):
+            await msg.channel.send(f"My prefix is `{self.bot.command_prefix}`.")
 
 
 async def setup(bot: commands.Bot):
