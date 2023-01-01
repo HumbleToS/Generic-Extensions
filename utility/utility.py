@@ -50,6 +50,7 @@ class Utility(commands.Cog):
 
     # This listener assumes that you only have a single prefix set.
     # IF you don't you will need to update this to display correctly.
+    # You could also make this send an embed, if you wanted to.
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message) -> None:
         if re.fullmatch(rf"<@!?{self.bot.user.id}>", msg.content):
