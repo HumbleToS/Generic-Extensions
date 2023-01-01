@@ -53,7 +53,7 @@ class Utility(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, msg: discord.Message) -> None:
         if re.fullmatch(rf"<@!?{self.bot.user.id}>", msg.content):
-            await msg.channel.send(f"My prefix is `{self.bot.command_prefix}`.")
+            await msg.channel.send(f"My prefix is `{self.bot.command_prefix}`")
 
 
 async def setup(bot: commands.Bot):
