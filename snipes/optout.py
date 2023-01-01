@@ -23,12 +23,11 @@ This module emits a custom event: "on_optout_status_change" with the following p
 This module uses the following third party libs installed via pip: asqlite (https://github.com/Rapptz/asqlite)
 """
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 
 import asqlite
 from discord.ext import commands
-
 
 from .snipescommon import DB_FILENAME
 

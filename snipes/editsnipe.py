@@ -19,9 +19,9 @@ from __future__ import annotations
 This module uses the following third party libs installed via pip: asqlite (https://github.com/Rapptz/asqlite)
 """
 
-from dataclasses import dataclass
 import datetime
 import logging
+from dataclasses import dataclass
 
 import asqlite
 import discord
@@ -30,9 +30,8 @@ from discord.ext import commands, tasks
 # If not using all snipe categories, you'll need to bring these items into this file,
 # along with making sure the BotUser table is created and handling deleting opted out users data
 # from the database (the custom event won't work unless you maintain that logic.)
-from .snipescommon import DB_FILENAME
 from .optout import BotUser
-
+from .snipescommon import DB_FILENAME
 
 _logger = logging.getLogger(__name__)
 
