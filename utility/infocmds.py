@@ -105,7 +105,7 @@ class InformationCommands(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def userinfo(self, ctx: commands.Context, member: discord.Member = None) -> None:
+    async def userinfo(self, ctx: commands.Context, *, member: discord.Member = None) -> None:
         member = member or ctx.author
         roles = member.roles
         roles_text = "".join(f'{role.mention}  ' for role in roles[1:])
