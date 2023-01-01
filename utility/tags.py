@@ -19,8 +19,8 @@ from __future__ import annotations
 This module uses the following third party libs installed via pip: asqlite (https://github.com/Rapptz/asqlite)
 """
 
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
 
 import asqlite
 import discord
