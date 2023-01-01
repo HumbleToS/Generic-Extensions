@@ -55,6 +55,7 @@ class InformationCommands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def serverinfo(self, ctx: commands.Context) -> None:
+        """Gives you information about the current server."""
         guild = ctx.guild
         guild_features = set(guild.features)
         features_have = GUILD_FEATURES_SET & guild_features
@@ -106,6 +107,13 @@ class InformationCommands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def userinfo(self, ctx: commands.Context, *, member: discord.Member = None) -> None:
+        """Gives you information about a server member.
+
+        Parameters
+        ----------
+        member : discord.Member, optional
+            The member to get information about, defaults to author if not given.
+        """
         member = member or ctx.author
         roles = member.roles
         roles_text = "".join(f'{role.mention}  ' for role in roles[1:])
@@ -133,6 +141,13 @@ class InformationCommands(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def roleinfo(self, ctx: commands.Context, *, role: discord.Role = None) -> None:
+        """Gives you information about a role.
+
+        Parameters
+        ----------
+        role : discord.Role, optional
+            The role to get information about. Defaults to authors highest role.
+        """
         role = role or ctx.author.top_role
         role_name = role.name
         hoists = role.hoist
