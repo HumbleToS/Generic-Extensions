@@ -132,8 +132,36 @@ class InformationCommands(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def roleinfo(self, ctx: commands.Context, role: discord.Role) -> None:
-        pass
+    async def roleinfo(self, ctx: commands.Context, *, role: discord.Role = None) -> None:
+        role = role or ctx.author.top_role
+        role_name = role.name
+        hoists = role.hoist
+        r, g, b = role.color.to_rgb()
+        role_color_str = f"({r}, {g}, {b})"
+        role_icon = role.icon
+        num_members = len(role.members)
+        position = role.position
+        integration_managed = role.managed
+
+        embed = discord.Embed(title=role_name, color=role.color)
+
+        if role_icon:
+            embed.set_thumbnail(url=role_icon.url)
+
+        fields = { # field_name: (value, inline)
+            "ID": (f"{role.id}", False),
+            "Created At": (f"{discord.utils.format_dt(role.created_at)}", False),
+            "Managed?": (f"{'Yes' if integration_managed else 'No'}", True),
+            "Hoists?": (f"{'Yes' if hoists else 'No'}", True),
+            "Position": (f"{position:,}", False),
+            "Color": (f"{role_color_str}", True),
+            "Number of Members": (f"{num_members:,}", False)
+        }
+
+        for name, value in fields.items():
+            embed.add_field(name=name, value=value[0], inline=value[1])
+
+        await ctx.send(embed=embed)
 
 async def setup(bot: commands.Bot):
     _logger.info("Loading cog InformationCommands")
