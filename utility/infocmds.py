@@ -48,7 +48,7 @@ GUILD_FEATURES_SET = set(GUILD_FEATURES_DICT.keys())
 
 _logger = logging.getLogger(__name__)
 
-class InformationCommands(commands.Cog):
+class InfoCommands(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -179,8 +179,8 @@ class InformationCommands(commands.Cog):
         await ctx.send(embed=embed)
 
 async def setup(bot: commands.Bot):
-    _logger.info("Loading cog InformationCommands")
-    await bot.add_cog(InformationCommands(bot))
+    _logger.info("Loading cog InfoCommands")
+    await bot.add_cog(InfoCommands(bot))
 
 async def teardown(_: commands.Bot):
-    _logger.info("Unloading cog InformationCommands")
+    _logger.info("Unloading cog InfoCommands")
