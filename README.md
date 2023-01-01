@@ -8,6 +8,7 @@ This project is a collection of generic extensions/cogs that can be used with di
 
 In general, these files follow the same basic template. If they require a database, they are configured to use `asqlite`, and may use differently named files for each specific function. This behavior could be changed by you.
 
+Converting the commands contained within to slash commands should be a trivial task.
 
 # Contributions and Issues
 
