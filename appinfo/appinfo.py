@@ -21,12 +21,12 @@ import functools
 import logging
 import math
 import platform
-import time
 import sys
+import time
 
 import discord
-from discord.utils import format_dt
 from discord.ext import commands
+from discord.utils import format_dt
 
 """
 This module optionally uses the `psutil` pip package to display system information.
