@@ -56,6 +56,7 @@ class ReminderEntry:
 
     @classmethod
     async def create(cls, *, owner_id: int, guild_id: int, channel_id: int, timestamp: int, body: str) -> ReminderEntry:
+        """Creates a Reminder."""
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("""INSERT INTO reminders (owner_id, guild_id, channel_id, timestamp, body)
@@ -67,6 +68,7 @@ class ReminderEntry:
 
     @classmethod
     async def get_or_none(cls, id: int, /) -> ReminderEntry | None:
+        """Get Reminder witih given id, returns None if not found."""
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("SELECT * FROM reminders WHERE id = ? AND completed = FALSE", id)
@@ -85,6 +87,7 @@ class ReminderEntry:
 
     @staticmethod
     async def cancel(id: int, /) -> int:
+        """'cancels' a reminder. In reality this just marks it as completed."""
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("UPDATE reminders SET completed = TRUE WHERE id = ?", id)
@@ -94,6 +97,9 @@ class ReminderEntry:
 
     @staticmethod
     async def clear(*, guild_id: int, owner_id: int) -> int:
+        """'clears' all reminders for a given owner in a given guild.
+        In reality this just marks all of them completed so that they're not run.
+        """
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("UPDATE reminders SET completed = TRUE WHERE guild_id = ? AND owner_id = ?", guild_id, owner_id)
@@ -102,6 +108,7 @@ class ReminderEntry:
                 return cur.get_cursor().rowcount
 
     async def mark_completed(self) -> ReminderEntry:
+        """Marks the current Reminder as completed."""
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("UPDATE reminders SET completed = TRUE WHERE id = ?", self.id)
@@ -113,6 +120,7 @@ class ReminderEntry:
                 return self
 
 
+# Converter taken from `?tag time converter` on discord.py. Thank you pikaninja.
 TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
 TIME_DICT = {"h":3600, "s":1, "m":60, "d":86400}
 
@@ -130,6 +138,13 @@ class TimeConverter(commands.Converter):
         return time
 
 
+# This general format with a loop + restarting it after adding/removing items could be
+# used for other things as well. For example, you could make a temp ban command using it.
+# Basically anything that requires you to store things for future execution.
+# You'll likely want to make it so the loop handles all the future tasks you have, not just
+# specific ones (e.g. just reminders) so you don't have repeated code all over.
+# For this project, it'll be repeated in any areas that use this similar pattern, however
+# that's to keep this project relatively "plug and play" with any application.
 class RemindersCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
