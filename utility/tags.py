@@ -28,6 +28,8 @@ from discord.ext import commands
 
 from utils.paginator import EmbedPaginatorView
 
+ALLOWED_MENTIONS = discord.AllowedMentions.none()
+
 DB_FILENAME = "tags.sqlite"
 
 TAGS_SETUP_SQL = """
@@ -111,7 +113,7 @@ class TagsCog(commands.Cog):
         tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
 
         if tag is not None:
-            await ctx.send(tag.content)
+            await ctx.send(tag.content, allowed_mentions=ALLOWED_MENTIONS)
         else:
             await ctx.send(f"Could not find tag with name `{name}`.")
 
@@ -261,6 +263,15 @@ class TagsCog(commands.Cog):
                 #     await ctx.send(embed=embed)
                 # else:
                 #     await ctx.send(f"No results found for `{member}`")
+
+    @tag.command()
+    async def raw(self, ctx: commands.Context, *, name: str) -> None:
+        tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
+
+        if tag is not None:
+            await ctx.send(discord.utils.escape_markdown(tag.content), allowed_mentions=ALLOWED_MENTIONS)
+        else:
+            await ctx.send(f"Could not find tag with name `{name}`.")
 
 
 async def setup(bot: commands.Bot):
