@@ -26,7 +26,7 @@ import asqlite
 import discord
 from discord.ext import commands
 
-from ..utils.paginator import EmbedPaginatorView
+from utils.paginator import EmbedPaginatorView
 
 DB_FILENAME = "tags.sqlite"
 
