@@ -204,6 +204,8 @@ class RemindersCog(commands.Cog):
         channel_id = ctx.channel.id
         reminder_timestamp = reminder_dt.timestamp()
 
+        text = discord.utils.escape_mentions(text)
+
         new_reminder = await ReminderEntry.create(owner_id=owner_id, guild_id=guild_id, channel_id=channel_id, timestamp=reminder_timestamp, body=text)
 
         await ctx.reply(f"Reminder created (ID: {new_reminder.id}). I'll remind you at {discord.utils.format_dt(reminder_dt)}.")
