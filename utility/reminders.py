@@ -206,7 +206,7 @@ class RemindersCog(commands.Cog):
 
         new_reminder = await ReminderEntry.create(owner_id=owner_id, guild_id=guild_id, channel_id=channel_id, timestamp=reminder_timestamp, body=text)
 
-        await ctx.send(f"Reminder created (ID: {new_reminder.id}). I'll remind you at {discord.utils.format_dt(reminder_dt)}.")
+        await ctx.reply(f"Reminder created (ID: {new_reminder.id}). I'll remind you at {discord.utils.format_dt(reminder_dt)}.")
 
         self.start_restart_task()
 
@@ -229,9 +229,9 @@ class RemindersCog(commands.Cog):
 
                     embed = discord.Embed(description=out, title="Your Reminders", color=discord.Color.blue())
 
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                 else:
-                    await ctx.send("You don't have any reminders set.")
+                    await ctx.reply("You don't have any reminders set.")
 
     @reminder.command()
     async def cancel(self, ctx: commands.Context, id: int) -> None:
@@ -247,11 +247,11 @@ class RemindersCog(commands.Cog):
         if reminder:
             if reminder.owner_id == ctx.author.id:
                 await reminder.mark_completed()
-                await ctx.send(f"Reminder with id {id} cancelled.")
+                await ctx.reply(f"Reminder with id {id} cancelled.")
             else:
-                await ctx.send("You do not own that reminder.")
+                await ctx.reply("You do not own that reminder.")
         else:
-            await ctx.send(f"No reminder with id {id} found.")
+            await ctx.reply(f"No reminder with id {id} found.")
 
         self.start_restart_task()
 
@@ -259,10 +259,10 @@ class RemindersCog(commands.Cog):
     async def clear(self, ctx: commands.Context) -> None:
         """Cancels all reminders you have set."""
 
-        # TODO Probably make this a confirm menu.
+        # TODO Probably add a confirm menu to this.
         num_removed = await ReminderEntry.clear(guild_id=ctx.guild.id, owner_id=ctx.author.id)
 
-        await ctx.send(f"Removed {num_removed} reminders of yours in this server.")
+        await ctx.reply(f"Removed {num_removed} reminders of yours in this server.")
 
         self.start_restart_task()
 
