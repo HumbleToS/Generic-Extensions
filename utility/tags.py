@@ -102,6 +102,7 @@ class TagsCog(commands.Cog):
             await db.execute(TAGS_SETUP_SQL)
 
     @commands.group(invoke_without_command=True)
+    @commands.guild_only()
     async def tag(self, ctx: commands.Context, *, name: str):
         """Gets a tag with given name
 
