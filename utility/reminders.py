@@ -28,6 +28,8 @@ import asqlite
 import discord
 from discord.ext import commands, tasks
 
+from utils.converters import TimeConverter
+
 DB_FILENAME = "reminders.sqlite"
 
 REMINDER_SETUP_SQL = """
@@ -118,24 +120,6 @@ class ReminderEntry:
                     self.completed = 1
 
                 return self
-
-
-# Converter taken from `?tag time converter` on discord.py. Thank you pikaninja.
-TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
-TIME_DICT = {"h":3600, "s":1, "m":60, "d":86400}
-
-class TimeConverter(commands.Converter):
-    async def convert(self, _: commands.Context, argument: str):
-        matches = TIME_REGEX.findall(argument.lower())
-        time = 0
-        for v, k in matches:
-            try:
-                time += TIME_DICT[k]*float(v)
-            except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
-            except ValueError:
-                raise commands.BadArgument("{} is not a number!".format(v))
-        return time
 
 
 # This general format with a loop + restarting it after adding/removing items could be
