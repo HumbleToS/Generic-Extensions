@@ -121,13 +121,7 @@ class ReminderEntry:
                 return self
 
 
-# This general format with a loop + restarting it after adding/removing items could be
-# used for other things as well. For example, you could make a temp ban command using it.
-# Basically anything that requires you to store things for future execution.
-# You'll likely want to make it so the loop handles all the future tasks you have, not just
-# specific ones (e.g. just reminders) so you don't have repeated code all over.
-# For this project, it'll be repeated in any areas that use this similar pattern, however
-# that's to keep this project relatively "plug and play" with any application.
+# For a generic example of how this would look, see `templates/future_tasks_template.py`
 class RemindersCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
