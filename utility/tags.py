@@ -199,11 +199,11 @@ class TagsCog(commands.Cog):
                 await cur.execute("SELECT name FROM tags WHERE name LIKE ? and guild_id = ?", f"%{query}%", ctx.guild.id)
 
                 results = await cur.fetchall()
-
+                results = list(enumerate(results, 1))
                 embeds = []
 
                 for result in discord.utils.as_chunks(results, 20):
-                    out = "\n".join(res['name'] for res in result)
+                    out = "\n".join(f"{res[0]}.) {res[1]['name']}" for res in result)
                     embed = discord.Embed(color=discord.Color.blue(), description=out, title=query)
                     embeds.append(embed)
 
@@ -241,11 +241,11 @@ class TagsCog(commands.Cog):
                 await cur.execute("SELECT name FROM tags WHERE owner_id = ? and guild_id = ? ORDER BY name ASC", member.id, ctx.guild.id)
 
                 results = await cur.fetchall()
-
+                results = list(enumerate(results, 1))
                 embeds = []
 
-                for result in discord.utils.as_chunks(results, 20):
-                    out = "\n".join(res['name'] for res in result)
+                for result in discord.utils.as_chunks(results, 20): # `result` will be a list[index, Row]
+                    out = "\n".join(f"{res[0]}.) {res[1]['name']}" for res in result)
                     embed = discord.Embed(color=discord.Color.blue(), description=out, title=f"{member}'s Tags")
                     embeds.append(embed)
 
