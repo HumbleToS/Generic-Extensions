@@ -194,7 +194,6 @@ class TagsCog(commands.Cog):
         query : str
             The query to search for.
         """
-        # TODO maybe make this use a paginator to display all results?
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("SELECT name FROM tags WHERE name LIKE ? and guild_id = ?", f"%{query}%", ctx.guild.id)
@@ -211,8 +210,10 @@ class TagsCog(commands.Cog):
                 if len(embeds) > 1:
                     paginator = EmbedPaginatorView(ctx.author, embeds)
                     paginator.message = await ctx.send(embed=paginator.initial, view=paginator)
+                elif len(embeds) == 1:
+                    await ctx.send(embed=embeds[0])
                 else:
-                    await ctx.send(embed=embed)
+                    await ctx.send(f"No tags matching search: `{discord.utils.escape_mentions(query)}`")
 
                 # IMPLEMENTATION WITHOUT PAGINATION:
                 # if results:
@@ -237,7 +238,7 @@ class TagsCog(commands.Cog):
 
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
-                await cur.execute("SELECT name FROM tags WHERE owner_id = ? and guild_id = ?", member.id, ctx.guild.id)
+                await cur.execute("SELECT name FROM tags WHERE owner_id = ? and guild_id = ? ORDER BY name ASC", member.id, ctx.guild.id)
 
                 results = await cur.fetchall()
 
@@ -251,8 +252,10 @@ class TagsCog(commands.Cog):
                 if len(embeds) > 1:
                     paginator = EmbedPaginatorView(ctx.author, embeds)
                     paginator.message = await ctx.send(embed=paginator.initial, view=paginator)
+                elif len(embeds) == 1:
+                    await ctx.send(embed=embeds[0])
                 else:
-                    await ctx.send(embed=embed)
+                    await ctx.send(f"{member} has no tags.")
 
                 # IMPLEMENTATION WITHOUT PAGINATION:
                 # if results:
