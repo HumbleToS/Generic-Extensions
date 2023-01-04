@@ -79,7 +79,7 @@ class EmbedPaginatorView(discord.ui.View):
 
     async def update(self, interaction: discord.Interaction) -> None:
         self._update_buttons()
-        await interaction.response.edit_message(content=self.paginator.pages[self.current_index], view=self)
+        await interaction.response.edit_message(embed=self.embeds[self.current_index], view=self)
 
     @discord.ui.button(emoji="⏮️", style=discord.ButtonStyle.gray, disabled=True)
     async def to_first_btn(self, interaction: discord.Interaction, _: discord.ui.Button) -> None:
