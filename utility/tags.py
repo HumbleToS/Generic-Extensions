@@ -233,7 +233,6 @@ class TagsCog(commands.Cog):
         member : discord.Member
             The member to search for, defaults to member using the command.
         """
-        # TODO maybe make this use a paginator to display all results?
         member = member or ctx.author
 
         async with asqlite.connect(DB_FILENAME) as db:
