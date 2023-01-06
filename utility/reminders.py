@@ -196,7 +196,7 @@ class RemindersCog(commands.Cog):
         channel_id = ctx.channel.id
         reminder_timestamp = reminder_dt.timestamp()
 
-        text = discord.utils.escape_mentions(text)
+        text = commands.clean_content(text)
 
         new_reminder = await ReminderEntry.create(owner_id=owner_id, guild_id=guild_id, channel_id=channel_id, timestamp=reminder_timestamp, body=text)
 
