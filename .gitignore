@@ -4,3 +4,4 @@
 *.sqlite*
 testbot.py
 .vscode
+config.py

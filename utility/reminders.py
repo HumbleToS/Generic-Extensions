@@ -22,6 +22,7 @@ This module uses the following third party libs installed via pip: asqlite (http
 from dataclasses import dataclass
 import datetime
 import logging
+import typing
 
 import asqlite
 import discord
@@ -177,7 +178,7 @@ class RemindersCog(commands.Cog):
     # will be significantly easier to convert to a slash command.
     @commands.group(invoke_without_command=True, aliases=("remind", ))
     @commands.guild_only()
-    async def reminder(self, ctx: commands.Context, when: TimeConverter, *, text: str = "Idk you never told me.") -> None:
+    async def reminder(self, ctx: commands.Context, when: TimeConverter, *, text: commands.clean_content = "Idk you never told me.") -> None:
         """Allows you to set reminders.
 
         Parameters
@@ -195,8 +196,6 @@ class RemindersCog(commands.Cog):
         guild_id = ctx.guild.id
         channel_id = ctx.channel.id
         reminder_timestamp = reminder_dt.timestamp()
-
-        text = commands.clean_content(text)
 
         new_reminder = await ReminderEntry.create(owner_id=owner_id, guild_id=guild_id, channel_id=channel_id, timestamp=reminder_timestamp, body=text)
 
