@@ -26,6 +26,10 @@ import asqlite
 import discord
 from discord.ext import commands
 
+from utils.paginator import EmbedPaginatorView
+
+ALLOWED_MENTIONS = discord.AllowedMentions.none()
+
 DB_FILENAME = "tags.sqlite"
 
 TAGS_SETUP_SQL = """
@@ -98,6 +102,7 @@ class TagsCog(commands.Cog):
             await db.execute(TAGS_SETUP_SQL)
 
     @commands.group(invoke_without_command=True)
+    @commands.guild_only()
     async def tag(self, ctx: commands.Context, *, name: str):
         """Gets a tag with given name
 
@@ -109,7 +114,7 @@ class TagsCog(commands.Cog):
         tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
 
         if tag is not None:
-            await ctx.send(tag.content)
+            await ctx.send(tag.content, allowed_mentions=ALLOWED_MENTIONS)
         else:
             await ctx.send(f"Could not find tag with name `{name}`.")
 
@@ -133,7 +138,7 @@ class TagsCog(commands.Cog):
 
     @tag.command(aliases=("rm",))
     async def delete(self, ctx: commands.Context, *, name: str) -> None:
-        """Deletes a tag with given name.
+        """Deletes a tag with given name. Works for tag owner and those with the Manage Messages server permission.
 
         Parameters
         ----------
@@ -145,7 +150,7 @@ class TagsCog(commands.Cog):
             await ctx.send(f"Tag with name `{name}` not found.")
             return
 
-        if original.owner_id != ctx.author.id: # TODO MAKE THIS WORK FOR PEOPLE WITH ADMIN PERMS TOO
+        if original.owner_id != ctx.author.id and not ctx.author.guild_permissions.manage_messages:
             await ctx.send(f"You do not own the tag named `{name}`.")
             return
 
@@ -194,15 +199,82 @@ class TagsCog(commands.Cog):
                 await cur.execute("SELECT name FROM tags WHERE name LIKE ? and guild_id = ?", f"%{query}%", ctx.guild.id)
 
                 results = await cur.fetchall()
+                results = list(enumerate(results, 1))
+                embeds = []
 
-                if results:
-                    out = "\n".join(res['name'] for res in results[:20])
-                    if (num_results := len(results)) > 20:
-                        out += f"\n{num_results-20:,} other results."
+                for result in discord.utils.as_chunks(results, 20):
+                    out = "\n".join(f"{res[0]}.) {res[1]['name']}" for res in result)
                     embed = discord.Embed(color=discord.Color.blue(), description=out, title=query)
-                    await ctx.send(embed=embed)
+                    embeds.append(embed)
+
+                if len(embeds) > 1:
+                    paginator = EmbedPaginatorView(ctx.author, embeds)
+                    paginator.message = await ctx.send(embed=paginator.initial, view=paginator)
+                elif len(embeds) == 1:
+                    await ctx.send(embed=embeds[0])
                 else:
-                    await ctx.send(f"No results found for `{query}`")
+                    await ctx.send(f"No tags matching search: `{discord.utils.escape_mentions(query)}`")
+
+                # IMPLEMENTATION WITHOUT PAGINATION:
+                # if results:
+                #     out = "\n".join(res['name'] for res in results[:20])
+                #     if (num_results := len(results)) > 20:
+                #         out += f"\n{num_results-20:,} other results."
+                #     embed = discord.Embed(color=discord.Color.blue(), description=out, title=query)
+                #     await ctx.send(embed=embed)
+                # else:
+                #     await ctx.send(f"No results found for `{query}`")
+
+    @tag.command()
+    async def list(self, ctx: commands.Context, *, member: discord.Member = None) -> None:
+        """Lists the tags owned by a given user.
+
+        Parameters
+        ----------
+        member : discord.Member
+            The member to search for, defaults to member using the command.
+        """
+        member = member or ctx.author
+
+        async with asqlite.connect(DB_FILENAME) as db:
+            async with db.cursor() as cur:
+                await cur.execute("SELECT name FROM tags WHERE owner_id = ? and guild_id = ? ORDER BY name ASC", member.id, ctx.guild.id)
+
+                results = await cur.fetchall()
+                results = list(enumerate(results, 1))
+                embeds = []
+
+                for result in discord.utils.as_chunks(results, 20): # `result` will be a list[index, Row]
+                    out = "\n".join(f"{res[0]}.) {res[1]['name']}" for res in result)
+                    embed = discord.Embed(color=discord.Color.blue(), description=out, title=f"{member}'s Tags")
+                    embeds.append(embed)
+
+                if len(embeds) > 1:
+                    paginator = EmbedPaginatorView(ctx.author, embeds)
+                    paginator.message = await ctx.send(embed=paginator.initial, view=paginator)
+                elif len(embeds) == 1:
+                    await ctx.send(embed=embeds[0])
+                else:
+                    await ctx.send(f"{member} has no tags.")
+
+                # IMPLEMENTATION WITHOUT PAGINATION:
+                # if results:
+                #     out = "\n".join(res['name'] for res in results[:20])
+                #     if (num_results := len(results)) > 20:
+                #         out += f"\n{num_results-20:,} other results."
+                #     embed = discord.Embed(color=discord.Color.blue(), description=out, title=f"{member}'s Tags")
+                #     await ctx.send(embed=embed)
+                # else:
+                #     await ctx.send(f"No results found for `{member}`")
+
+    @tag.command()
+    async def raw(self, ctx: commands.Context, *, name: str) -> None:
+        tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
+
+        if tag is not None:
+            await ctx.send(discord.utils.escape_markdown(tag.content), allowed_mentions=ALLOWED_MENTIONS)
+        else:
+            await ctx.send(f"Could not find tag with name `{name}`.")
 
 
 async def setup(bot: commands.Bot):
