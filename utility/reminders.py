@@ -22,7 +22,6 @@ This module uses the following third party libs installed via pip: asqlite (http
 from dataclasses import dataclass
 import datetime
 import logging
-import typing
 
 import asqlite
 import discord
