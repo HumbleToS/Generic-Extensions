@@ -29,3 +29,10 @@ If these extensions had an implementation without using utility functions previo
 # Contributions and Issues
 
 If you'd like to contribute, feel free to submit a pull request. If you find an error with any of the code, please file an issue.
+
+List of anticipated extensions if you feel like producing one:
+- Private Voice Channels
+- Role Management Commands
+- Lockdown Feature
+- Tickets
+- Anything else that people frequently create
