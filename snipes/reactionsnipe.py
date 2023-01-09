@@ -333,7 +333,7 @@ class ReactionSnipeCog(commands.Cog):
                 await db.commit()
 
                 deleted = cur.get_cursor().rowcount
-                _logger.info("Performing periodic deletesnipe purge. %d reactionsnipes removed.", deleted)
+                _logger.info("Performing periodic reactionsnipe purge. %d reactionsnipes removed.", deleted)
 
 
 async def setup(bot: commands.Bot):
