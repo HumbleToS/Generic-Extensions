@@ -35,4 +35,6 @@ List of anticipated extensions if you feel like producing one:
 - Role Management Commands
 - Lockdown Feature
 - Tickets
+- Invite tracking
+- Eco maybe?
 - Anything else that people frequently create
