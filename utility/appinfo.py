@@ -36,6 +36,9 @@ from discord.utils import format_dt
 
 """
 This module optionally uses the `psutil` pip package to display system information.
+
+A part of this module assumes that your Bot instance has a STARTED_AT
+attribute that is a UTC datetime representing the start time of your bot.
 """
 try:
     import psutil
