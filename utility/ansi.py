@@ -154,7 +154,7 @@ class AnsiMaker(discord.ui.View):
             'bgcolor': None
         }
 
-    async def update(self, button: discord.Button | None = None, identifier: str | None = None):
+    async def update(self, interaction: discord.Interaction, button: discord.Button | None = None, identifier: str | None = None):
         if identifier:
             for child in self.children:
                 if child != button and child.label.startswith(identifier):
@@ -180,10 +180,11 @@ class AnsiMaker(discord.ui.View):
 
         if any([fmt['bold'], fmt['underline'], state['color'], state['bgcolor']]):
             self.code = f"\u001b[{';'.join(ansis)}m"
-            await self.msg.edit(f'```ansi\n{self.code}{self.text}\u001b[0m\n```', view=self, allowed_mentions=discord.AllowedMentions.none())
+
+            await interaction.response.edit_message(content=f'```ansi\n{self.code}{self.text}\u001b[0m\n```', view=self, allowed_mentions=discord.AllowedMentions.none())
         else:
             self.code = ''
-            await self.msg.edit(f'```ansi\n{self.text}\n```', view=self, allowed_mentions=discord.AllowedMentions.none())
+            await interaction.response.edit_message(content=f'```ansi\n{self.code}{self.text}\u001b[0m\n```', view=self, allowed_mentions=discord.AllowedMentions.none())
 
     async def interaction_check(self, interaction: discord.Interaction):
         if interaction.user != self.ctx.author:
@@ -194,11 +195,11 @@ class AnsiMaker(discord.ui.View):
 
     @discord.ui.button(label='Finish', style=discord.ButtonStyle.success)
     async def finish(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self.ctx.message.reply(f'\`\`\`ansi\n{self.code}{self.text}\u001b[0m\n\`\`\`')
+        await interaction.response.send_message(f'\`\`\`ansi\n{self.code}{self.text}\u001b[0m\n\`\`\`')
 
     @discord.ui.button(label='Delete', style=discord.ButtonStyle.danger)
     async def delete(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self.msg.delete()
+        await interaction.message.delete()
 
     @discord.ui.button(label='Bold', style=discord.ButtonStyle.primary)
     async def bolder(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -209,7 +210,7 @@ class AnsiMaker(discord.ui.View):
             self.state['format']['bold'] = True
             button.style = discord.ButtonStyle.danger
 
-        await self.update()
+        await self.update(interaction)
 
     @discord.ui.button(label='Underline', style=discord.ButtonStyle.primary)
     async def underliner(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -220,7 +221,7 @@ class AnsiMaker(discord.ui.View):
             self.state['format']['underline'] = True
             button.style = discord.ButtonStyle.danger
 
-        await self.update()
+        await self.update(interaction)
 
     @discord.ui.button(label='T Gray', style=discord.ButtonStyle.primary)
     async def t_gray(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -231,7 +232,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '30'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Red', style=discord.ButtonStyle.primary)
     async def t_red(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -242,7 +243,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '31'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Green', style=discord.ButtonStyle.primary)
     async def t_green(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -253,7 +254,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '32'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Yellow', style=discord.ButtonStyle.primary)
     async def t_yellow(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -264,7 +265,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '33'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Blue', style=discord.ButtonStyle.primary)
     async def t_blue(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -275,7 +276,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '34'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Pink', style=discord.ButtonStyle.primary)
     async def t_pink(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -286,7 +287,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '35'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T Cyan', style=discord.ButtonStyle.primary)
     async def t_cyan(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -297,7 +298,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '36'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='T White', style=discord.ButtonStyle.primary)
     async def t_white(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -308,7 +309,7 @@ class AnsiMaker(discord.ui.View):
             self.state['color'] = '37'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'T')
+        await self.update(interaction, button, 'T')
 
     @discord.ui.button(label='BG D Blue', style=discord.ButtonStyle.primary)
     async def bg_d_blue(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -319,7 +320,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '40'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Orange', style=discord.ButtonStyle.primary)
     async def bg_orange(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -330,7 +331,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '41'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Gray 1', style=discord.ButtonStyle.primary)
     async def bg_gray_1(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -341,7 +342,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '42'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Gray 2', style=discord.ButtonStyle.primary)
     async def bg_gray_2(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -352,7 +353,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '43'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Gray 3', style=discord.ButtonStyle.primary)
     async def bg_gray_3(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -363,7 +364,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '44'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Gray 4', style=discord.ButtonStyle.primary)
     async def bg_gray_4(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -374,7 +375,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '46'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG Indigo', style=discord.ButtonStyle.primary)
     async def bg_indigo(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -385,7 +386,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '45'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
     @discord.ui.button(label='BG White', style=discord.ButtonStyle.primary)
     async def bg_white(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -396,7 +397,7 @@ class AnsiMaker(discord.ui.View):
             self.state['bgcolor'] = '47'
             button.style = discord.ButtonStyle.danger
 
-        await self.update(button, 'BG')
+        await self.update(interaction, button, 'BG')
 
 
 class AnsiUtilityCmd(commands.Cog):
