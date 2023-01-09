@@ -1,4 +1,4 @@
-# Generic Cogs
+# Generic Extensions
 
 This project is a collection of generic extensions/cogs that can be used with discord.py.
 
