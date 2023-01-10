@@ -27,6 +27,7 @@ This module uses the following third party libs installed via pip: asqlite (http
 
 import datetime
 import logging
+import typing
 from dataclasses import dataclass
 
 import asqlite
@@ -85,6 +86,7 @@ class EditSnipe:
             The EditSnipe.
         """
         assert before.guild is not None
+        assert after.guild is not None
         assert before.id == after.id
 
         async with asqlite.connect(DB_FILENAME) as db:
@@ -214,6 +216,8 @@ class EditSnipe:
         discord.Embed
             The generated Embed
         """
+        assert ctx.guild
+
         author = ctx.guild.get_member(self.sender_id) or await ctx.bot.fetch_member(self.sender_id)
 
         embed = discord.Embed(color=discord.Color.blue())
@@ -277,6 +281,8 @@ class EditSnipeCog(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def rmesnipe(self, ctx: commands.Context, num_back: int = 0) -> None:
         """Removes an editsnipe in current channel."""
+        assert isinstance(ctx.channel, discord.abc.GuildChannel)
+
         num_deleted = await EditSnipe.delete_one_in(ctx.channel.id, offset=num_back)
 
         if num_deleted > 0:
@@ -287,16 +293,18 @@ class EditSnipeCog(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_guild_permissions(manage_messages=True)
-    async def rmesnipes(self, ctx: commands.Context, channel: discord.TextChannel = None):
+    async def rmesnipes(self, ctx: commands.Context, channel: discord.TextChannel | None = None):
         """Removes all editsnipes in a channel. Defaults to current channel."""
-        channel = channel or ctx.channel
+        chan = channel or ctx.message.channel
 
-        num_deleted = await EditSnipe.delete_all_in(channel.id)
+        assert isinstance(chan, discord.abc.GuildChannel)
+
+        num_deleted = await EditSnipe.delete_all_in(chan.id)
 
         if num_deleted > 0:
-            await ctx.send(f"Deleted {num_deleted} snipes in {channel.mention}")
+            await ctx.send(f"Deleted {num_deleted} snipes in {chan.mention}")
         else:
-            await ctx.send(f"I couldn't find anything to delete in {channel.mention}")
+            await ctx.send(f"I couldn't find anything to delete in {chan.mention}")
 
     @tasks.loop(minutes=TTL_MINUTES)
     async def delete_snipe_db_purge(self):
