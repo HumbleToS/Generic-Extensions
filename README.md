@@ -8,7 +8,7 @@ This project is a collection of generic extensions/cogs that can be used with di
 
 In general, these files follow the same basic template. If they require a database, they are configured to use `asqlite`, and may use differently named files for each specific function. This behavior could be changed by you.
 
-Converting the commands contained within to slash commands should be a trivial task, though some of the commands (namely the ones reserved for bot owner usage) should not be converted, as they are better served as prefix commands.
+In general, the commands used are legacy (prefix) commands. Converting these prefix commands to slash commands *should* be simple to accomplish, though some of the commands (namely the owner usage only ones) should remain as legacy (prefix) commands. Some of the files contain slash commands, which will need to be synced to Discord in order to operate. A sync prefix command is provided in the `utility/sync.py` file.
 
 All extensions assume that you have the following intents enabled:
 - message_content
