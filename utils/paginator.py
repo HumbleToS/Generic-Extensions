@@ -165,6 +165,6 @@ class EmbedPaginatorView(discord.ui.View):
         self.stop()
 
     @property
-    def initial(self) -> str:
+    def initial(self) -> discord.Embed:
         return self.embeds[0]
 
