@@ -24,7 +24,7 @@ import re
 from discord import Interaction, app_commands
 from discord.ext import commands
 
-__all__ = ["TimeConverter"]
+__all__ = ["TimeConverter", "CodeblockConverter"]
 
 # TimeConverter taken from `?tag time converter` on discord.py. Thank you pikaninja.
 TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
@@ -40,6 +40,15 @@ class _BaseConverter(app_commands.Transformer, commands.Converter):
 
     async def transform(self, _: Interaction, arg: str) -> str:
         return await self.handle(arg)
+
+
+class CodeblockConverter(_BaseConverter):
+    async def handle(self, arg: str) -> str:
+        if arg.startswith("`"):
+            arg = arg.removeprefix("```").removesuffix("```")
+            arg = arg.removeprefix("py\n")
+
+        return arg
 
 
 class TimeConverter(_BaseConverter):
