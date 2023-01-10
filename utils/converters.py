@@ -19,10 +19,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from discord import Interaction, app_commands
 from discord.ext import commands
+
+if TYPE_CHECKING:
+    ConverterReturn = TypeVar("ConverterReturn")
 
 __all__ = ["TimeConverter", "CodeblockConverter"]
 
@@ -31,15 +37,21 @@ TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
 TIME_DICT = {"h": 3600, "s": 1, "m": 60, "d": 86400}
 
 
-class _BaseConverter(app_commands.Transformer, commands.Converter):
-    async def handle(self, arg: str) -> str:
-        return arg
+class _BaseConverter(
+    app_commands.Transformer, commands.Converter, Generic[ConverterReturn]
+):
+    async def handle(
+        self, ctx_or_interaction: commands.Context | Interaction, arg: str
+    ) -> ConverterReturn:
+        raise NotImplementedError(
+            "Subclass this base converter and override the handle coro"
+        )
 
-    async def convert(self, _: commands.Context, arg: str) -> str:
-        return await self.handle(arg)
+    async def convert(self, ctx: commands.Context, arg: str) -> ConverterReturn:
+        return await self.handle(ctx, arg)
 
-    async def transform(self, _: Interaction, arg: str) -> str:
-        return await self.handle(arg)
+    async def transform(self, inter: Interaction, arg: str) -> ConverterReturn:
+        return await self.handle(inter, arg)
 
 
 class CodeblockConverter(_BaseConverter):
