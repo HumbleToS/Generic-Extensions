@@ -1,5 +1,5 @@
 """
-Copyright 2022-present fretgfr
+Copyright 2022-present fretgfr, cibere
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,38 @@ SOFTWARE.
 """
 import re
 
+from discord import Interaction, app_commands
 from discord.ext import commands
 
-# Converter taken from `?tag time converter` on discord.py. Thank you pikaninja.
-TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
-TIME_DICT = {"h":3600, "s":1, "m":60, "d":86400}
+__all__ = ["TimeConverter"]
 
-class TimeConverter(commands.Converter):
-    async def convert(self, _: commands.Context, argument: str):
+# TimeConverter taken from `?tag time converter` on discord.py. Thank you pikaninja.
+TIME_REGEX = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
+TIME_DICT = {"h": 3600, "s": 1, "m": 60, "d": 86400}
+
+
+class _BaseConverter(app_commands.Transformer, commands.Converter):
+    async def handle(self, arg: str) -> str:
+        return arg
+
+    async def convert(self, _: commands.Context, arg: str) -> str:
+        return await self.handle(arg)
+
+    async def transform(self, _: Interaction, arg: str) -> str:
+        return await self.handle(arg)
+
+
+class TimeConverter(_BaseConverter):
+    async def handle(self, argument: str):
         matches = TIME_REGEX.findall(argument.lower())
         time = 0
         for v, k in matches:
             try:
-                time += TIME_DICT[k]*float(v)
+                time += TIME_DICT[k] * float(v)
             except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
+                raise commands.BadArgument(
+                    "{} is an invalid time-key! h/m/s/d are valid!".format(k)
+                )
             except ValueError:
                 raise commands.BadArgument("{} is not a number!".format(v))
         return time
-
