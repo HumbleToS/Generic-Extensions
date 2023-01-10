@@ -103,7 +103,7 @@ class ErrorHandler(commands.Cog):
             await ctx.send(f"You do not have permission to use that command.", ephemeral=True)
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"You must have missed an argument ({error.param}), please try again.", ephemeral=True, delete_after=30.0)
+            await ctx.send(f"You must have missed an argument ({error.param.name}), please try again.", ephemeral=True, delete_after=30.0)
 
         elif isinstance(error, commands.BotMissingPermissions):
             try:
