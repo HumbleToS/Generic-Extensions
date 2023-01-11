@@ -39,6 +39,10 @@ class RngCommandsCog(commands.Cog):
 
     @commands.command(aliases=("choice",))
     async def choose(self, ctx: commands.Context, *choices: str) -> None:
+        """Chooses a random item from a list of items
+
+        Items that contain a space must be enclosed in quotes. (i.e `choose "make food" "go out"` chooses between those two options)
+        """
         await ctx.send(random.choice(choices), allowed_mentions=discord.AllowedMentions.none())
 
     @commands.command()
@@ -48,7 +52,19 @@ class RngCommandsCog(commands.Cog):
 
     @commands.command()
     async def randint(self, ctx: commands.Context, minimum: int, maximum: int) -> None:
-        """Random integer in [minimum, maximum]"""
+        """Random integer in [minimum, maximum]
+
+        Parameters
+        ----------
+        minimum : int
+            The minimum value
+        maximum : int
+            The maximum value
+        """
+        if maximum < minimum:
+            await ctx.send("Minimum value cannot be greater than maximum value.")
+            return
+
         await ctx.send(random.randint(minimum, maximum))
 
     @commands.command()
@@ -61,6 +77,16 @@ class RngCommandsCog(commands.Cog):
 
     @commands.command()
     async def dice(self, ctx: commands.Context, num_dice: int = 1, faces: int = 6) -> None:
+        """Random dice roller.
+
+        Parameters
+        ----------
+        num_dice : int, optional
+            The number of dice to roll, between 1 and 20, defaults to 1.
+        faces : int, optional
+            The number of faces the rolled die should have, by default 6, possible values are:
+            1, 2, 3, 4, 5, 6, 7, 12, 14, 16, 18, 20, 24, 30, 34, 48, 50, 60, 100, and 120
+        """
         num_dice = max(min(num_dice, 20), 1)
 
         if not faces in POSSIBLE_DIE_FACES:
