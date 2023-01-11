@@ -22,13 +22,13 @@ SOFTWARE.
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from discord import Interaction, app_commands
 from discord.ext import commands
 
-if TYPE_CHECKING:
-    ConverterReturn = TypeVar("ConverterReturn")
+
+ConverterReturn = TypeVar("ConverterReturn")
 
 __all__ = ["TimeConverter", "CodeblockConverter"]
 
