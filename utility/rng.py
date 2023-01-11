@@ -38,7 +38,7 @@ class RngCommandsCog(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=("choice",))
-    async def choose(self, ctx: commands.Context, *choices: list[str]) -> None:
+    async def choose(self, ctx: commands.Context, *choices: str) -> None:
         await ctx.send(random.choice(choices), allowed_mentions=discord.AllowedMentions.none())
 
     @commands.command()
