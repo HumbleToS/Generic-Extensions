@@ -258,10 +258,10 @@ class ReactionSnipeCog(commands.Cog):
     async def cog_load(self) -> None:
         async with asqlite.connect(DB_FILENAME) as db:
             await db.executescript(SETUP_SQL)
-        self.delete_snipe_db_purge.start()
+        self.reaction_snipe_db_purge.start()
 
     async def cog_unload(self) -> None:
-        self.delete_snipe_db_purge.cancel()
+        self.reaction_snipe_db_purge.cancel()
 
     @commands.Cog.listener()
     async def on_optout_status_change(self, user: discord.User, _: bool) -> None:
@@ -323,7 +323,7 @@ class ReactionSnipeCog(commands.Cog):
             await ctx.send(f"I couldn't find anything to delete in {channel.mention}")
 
     @tasks.loop(minutes=TTL_MINUTES)
-    async def delete_snipe_db_purge(self):
+    async def reaction_snipe_db_purge(self):
         oldest_time = discord.utils.utcnow() - datetime.timedelta(minutes=TTL_MINUTES)
         oldest_timestamp = int(oldest_time.timestamp())
 
