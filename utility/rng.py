@@ -42,6 +42,11 @@ class RngCommandsCog(commands.Cog):
         """Chooses a random item from a list of items
 
         Items that contain a space must be enclosed in quotes. (i.e `choose "make food" "go out"` chooses between those two options)
+
+        Parameters
+        ----------
+        choices
+            The choices to choose from.
         """
         await ctx.send(random.choice(choices), allowed_mentions=discord.AllowedMentions.none())
 
@@ -79,13 +84,14 @@ class RngCommandsCog(commands.Cog):
     async def dice(self, ctx: commands.Context, num_dice: int = 1, faces: int = 6) -> None:
         """Random dice roller.
 
+        Possible values for number of faces are: 1, 2, 3, 4, 5, 6, 7, 12, 14, 16, 18, 20, 24, 30, 34, 48, 50, 60, 100, and 120
+
         Parameters
         ----------
         num_dice : int, optional
-            The number of dice to roll, between 1 and 20, defaults to 1.
+            The number of dice to roll, between 1 and 20.
         faces : int, optional
-            The number of faces the rolled die should have, by default 6, possible values are:
-            1, 2, 3, 4, 5, 6, 7, 12, 14, 16, 18, 20, 24, 30, 34, 48, 50, 60, 100, and 120
+            The number of faces the rolled die should have
         """
         num_dice = max(min(num_dice, 20), 1)
 
