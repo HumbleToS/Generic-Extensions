@@ -70,7 +70,7 @@ class RngCommandsCog(commands.Cog):
         res = [str(random.randint(1, faces)) for _ in range(num_dice)]
         res_str = "\n\t - ".join(res)
 
-        await ctx.send(f"Results:\n\t - {res_str}")
+        await ctx.send(f"Result(s):\n\t - {res_str}")
 
 async def setup(bot: commands.Bot):
     _logger.info("Loading cog RngCommandsCog")
