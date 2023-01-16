@@ -55,7 +55,7 @@ class _BaseConverter(
 
 
 class CodeblockConverter(_BaseConverter):
-    async def handle(self, arg: str) -> str:
+    async def handle(self, ctx_or_interaction, arg: str) -> str:
         if arg.startswith("`"):
             arg = arg.removeprefix("```").removesuffix("```")
             arg = arg.removeprefix("py\n")
@@ -64,7 +64,7 @@ class CodeblockConverter(_BaseConverter):
 
 
 class TimeConverter(_BaseConverter):
-    async def handle(self, argument: str):
+    async def handle(self, ctx_or_interaction, argument: str):
         matches = TIME_REGEX.findall(argument.lower())
         time = 0
         for v, k in matches:
