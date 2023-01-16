@@ -29,7 +29,8 @@ You should read and understand the general idea and format of what this is doing
 from discord.ext import commands, tasks
 
 
-class FutureTasksCog(commands.Cog):
+# You'll want to change the names that are used.
+class YourCogName(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -60,15 +61,15 @@ class FutureTasksCog(commands.Cog):
         ...
 
     @future_tasks_loop.before_loop
-    async def before_reminder_loop(self):
+    async def before_future_tasks_loop(self):
         await self.bot.wait_until_ready()
 
     def start_restart_task(self) -> None:
         # This function needs to be called any time something is added or removed from your loop.
-        if self.reminder_loop.is_running():
-            self.reminder_loop.restart()
+        if self.future_tasks_loop.is_running():
+            self.future_tasks_loop.restart()
         else:
-            self.reminder_loop.start()
+            self.future_tasks_loop.start()
 
 
 # Of course you'd need setup functions at the end if it's an extension etc.
