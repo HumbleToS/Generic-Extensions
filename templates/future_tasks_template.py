@@ -1,17 +1,23 @@
 """
 Copyright 2022-present fretgfr
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
-OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 
 """
@@ -23,7 +29,8 @@ You should read and understand the general idea and format of what this is doing
 from discord.ext import commands, tasks
 
 
-class FutureTasksCog(commands.Cog):
+# You'll want to change the names that are used.
+class YourCogName(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -54,15 +61,15 @@ class FutureTasksCog(commands.Cog):
         ...
 
     @future_tasks_loop.before_loop
-    async def before_reminder_loop(self):
+    async def before_future_tasks_loop(self):
         await self.bot.wait_until_ready()
 
     def start_restart_task(self) -> None:
         # This function needs to be called any time something is added or removed from your loop.
-        if self.reminder_loop.is_running():
-            self.reminder_loop.restart()
+        if self.future_tasks_loop.is_running():
+            self.future_tasks_loop.restart()
         else:
-            self.reminder_loop.start()
+            self.future_tasks_loop.start()
 
 
 # Of course you'd need setup functions at the end if it's an extension etc.

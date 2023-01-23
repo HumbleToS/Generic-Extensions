@@ -20,4 +20,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-DB_FILENAME = "snipes.sqlite"
+"""
+INCOMPELTE
+"""
+
+import logging
+
+import discord
+from discord.ext import commands
+
+_logger = logging.getLogger(__name__)
+
+
+class FeedbackModal(discord.ui.Modal, title="Feedback"):
+    pass
+
+class FeedbackView(discord.ui.View):
+
+    @discord.ui.button(label="Submit Feedback", style=discord.ButtonStyle.green)
+    async def feedback_btn(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        pass
+
+
+class FeedbackCog(commands.Cog):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+
+
+
+
+async def setup(bot: commands.Bot):
+    _logger.info("Loading cog FeedbackCog")
+    await bot.add_cog(FeedbackCog(bot))
+
+async def teardown(_: commands.Bot):
+    _logger.info("Unloading cog FeedbackCog")
