@@ -1,17 +1,23 @@
 """
 Copyright 2022-present fretgfr
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
-OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 from __future__ import annotations
 
@@ -252,10 +258,10 @@ class ReactionSnipeCog(commands.Cog):
     async def cog_load(self) -> None:
         async with asqlite.connect(DB_FILENAME) as db:
             await db.executescript(SETUP_SQL)
-        self.delete_snipe_db_purge.start()
+        self.reaction_snipe_db_purge.start()
 
     async def cog_unload(self) -> None:
-        self.delete_snipe_db_purge.cancel()
+        self.reaction_snipe_db_purge.cancel()
 
     @commands.Cog.listener()
     async def on_optout_status_change(self, user: discord.User, _: bool) -> None:
@@ -317,7 +323,7 @@ class ReactionSnipeCog(commands.Cog):
             await ctx.send(f"I couldn't find anything to delete in {channel.mention}")
 
     @tasks.loop(minutes=TTL_MINUTES)
-    async def delete_snipe_db_purge(self):
+    async def reaction_snipe_db_purge(self):
         oldest_time = discord.utils.utcnow() - datetime.timedelta(minutes=TTL_MINUTES)
         oldest_timestamp = int(oldest_time.timestamp())
 
@@ -327,7 +333,7 @@ class ReactionSnipeCog(commands.Cog):
                 await db.commit()
 
                 deleted = cur.get_cursor().rowcount
-                _logger.info("Performing periodic deletesnipe purge. %d reactionsnipes removed.", deleted)
+                _logger.info("Performing periodic reactionsnipe purge. %d reactionsnipes removed.", deleted)
 
 
 async def setup(bot: commands.Bot):

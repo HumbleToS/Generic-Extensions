@@ -1,17 +1,23 @@
 """
 Copyright 2022-present fretgfr
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
-OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 from __future__ import annotations
 
@@ -81,11 +87,10 @@ class TagEntry:
 
                 return cur.get_cursor().rowcount
 
-    async def update(self, *, new_content: str = None) -> TagEntry:
-        to_update_to = new_content or self.content
+    async def update(self, *, new_content: str) -> TagEntry:
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
-                await cur.execute("UPDATE tags SET content = ? WHERE name = ? AND guild_id = ? RETURNING *", to_update_to, self.name, self.guild_id)
+                await cur.execute("UPDATE tags SET content = ? WHERE name = ? AND guild_id = ? RETURNING *", new_content, self.name, self.guild_id)
                 await db.commit()
 
                 res = await cur.fetchone()
@@ -111,6 +116,8 @@ class TagsCog(commands.Cog):
         name : str
             The name of the tag to get.
         """
+        assert ctx.guild
+
         tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
 
         if tag is not None:
@@ -129,6 +136,8 @@ class TagsCog(commands.Cog):
         content : str
             The content of the tag to create.
         """
+        assert ctx.guild
+
         tag = await TagEntry.create(name=name, owner_id=ctx.author.id, guild_id=ctx.guild.id, content=content)
 
         if tag is not None:
@@ -145,6 +154,9 @@ class TagsCog(commands.Cog):
         name : str
             The name of the tag to delete
         """
+        assert ctx.guild
+        assert isinstance(ctx.author, discord.Member)
+
         original = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
         if not original:
             await ctx.send(f"Tag with name `{name}` not found.")
@@ -171,6 +183,8 @@ class TagsCog(commands.Cog):
         new_content : str
             The new content for the tag.
         """
+        assert ctx.guild
+
         original = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
         if not original:
             await ctx.send(f"Tag with name `{name}` not found.")
@@ -180,8 +194,7 @@ class TagsCog(commands.Cog):
             await ctx.send(f"You do not own the tag named `{name}`.")
             return
 
-        original.content = new_content
-        updated = await original.update()
+        updated = await original.update(new_content=new_content)
 
         await ctx.send(f"Tag with name {updated.name} content updated.")
 
@@ -194,6 +207,8 @@ class TagsCog(commands.Cog):
         query : str
             The query to search for.
         """
+        assert ctx.guild
+
         async with asqlite.connect(DB_FILENAME) as db:
             async with db.cursor() as cur:
                 await cur.execute("SELECT name FROM tags WHERE name LIKE ? and guild_id = ?", f"%{query}%", ctx.guild.id)
@@ -226,7 +241,7 @@ class TagsCog(commands.Cog):
                 #     await ctx.send(f"No results found for `{query}`")
 
     @tag.command()
-    async def list(self, ctx: commands.Context, *, member: discord.Member = None) -> None:
+    async def list(self, ctx: commands.Context, *, member: discord.Member | None = None) -> None:
         """Lists the tags owned by a given user.
 
         Parameters
@@ -234,6 +249,9 @@ class TagsCog(commands.Cog):
         member : discord.Member
             The member to search for, defaults to member using the command.
         """
+        assert ctx.guild
+        assert isinstance(ctx.author, discord.Member)
+
         member = member or ctx.author
 
         async with asqlite.connect(DB_FILENAME) as db:
@@ -269,6 +287,8 @@ class TagsCog(commands.Cog):
 
     @tag.command()
     async def raw(self, ctx: commands.Context, *, name: str) -> None:
+        assert ctx.guild
+
         tag = await TagEntry.get_or_none(name=name, guild_id=ctx.guild.id)
 
         if tag is not None:
